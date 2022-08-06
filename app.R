@@ -32,8 +32,7 @@ ui<-shinyUI(
                                          label = 'Data',
                                          value = Sys.Date(),
                                          width = "220px"
-                               )
-                               
+                               )           
                         ),
                         
                         column(2,#offset = 1,
@@ -51,8 +50,7 @@ ui<-shinyUI(
                                            choices = c("1A","1B","2A","2B","3A","3A","4A","4B"),
                                            selected = "50 Free",
                                            width = "220px"
-                               )
-                               
+                               )         
                         ),
                         column(2,#offset = 1,
                                selectInput(inputId = "Linhagem",
@@ -76,8 +74,6 @@ ui<-shinyUI(
                                            max = 100,
                                            value = 70)
                         ),
-                        
-                        
                         br(),
                         br(),
                         column(1,#offset = 1,
@@ -85,9 +81,7 @@ ui<-shinyUI(
                         )
                       ),
                       hr(),
-                      mainPanel(
-                        
-                        
+                      mainPanel( 
                         fluidRow(
                           column(6,
                                  
@@ -102,30 +96,24 @@ ui<-shinyUI(
                                  )),
                           column(2,
                                  selectInput("inSelect", "Select input",
-                                             c("Todos"))
-                                 
+                                             c("Todos"))          
                           ),
                           
                           column(6,#offset = 0,
                                  plotlyOutput(outputId = "plot1", width = 1100,height=600)
-                          )
-                          
-                        )    
-                        
+                          )                          
+                        )            
                       )),
              
              # tab panel 3 -
-             tabPanel("Base de Dados",
-                      
+             tabPanel("Base de Dados",                      
                       fluidPage(
                         #titlePanel(""),
-                        htmlOutput("googleSheet"))
-                      
+                        htmlOutput("googleSheet"))            
              )
   ))
 
 server = function(input, output, session) {
-  
   ####
   # link your Sheet's URL string here
   googleSheet_embed_link <- "https://docs.google.com/spreadsheets/d/1RwcmkFx2gGMvXDLazlWp7hXHBl1cC4czCjx4SMjgdnI/edit#gid=0"
@@ -143,7 +131,6 @@ server = function(input, output, session) {
   
   outputDir <- "responses"
   
-  
   saveData <- function(data) {
     # The data must be a dataframe rather than a named vector
     data <- data %>% as.list() %>% data.frame() 
@@ -154,19 +141,16 @@ server = function(input, output, session) {
     data$Data<- as.numeric(data$Data)
     data$Data<- as.Date(data$Data, origin = "1970-01-01")
     
-    sheet_append("1RwcmkFx2gGMvXDLazlWp7hXHBl1cC4czCjx4SMjgdnI", data)
-    
+    sheet_append("1RwcmkFx2gGMvXDLazlWp7hXHBl1cC4czCjx4SMjgdnI", data)   
   }
   
   loadData <- function() {
     # Read the data
     
     read_sheet("1RwcmkFx2gGMvXDLazlWp7hXHBl1cC4czCjx4SMjgdnI")
-    
-    
+        
   }
-  
-  
+
   ##########################################################################################
   
   # Whenever a field is filled, aggregate all form data
@@ -175,7 +159,6 @@ server = function(input, output, session) {
     data <- sapply(fields, function(x) input[[x]])
     data
   })
-  
   
   # When the Submit button is clicked, save the form data
   observeEvent(input$submit, {
@@ -200,8 +183,7 @@ server = function(input, output, session) {
   #   Historico
   # })
   #####################################
-  dataset<- reactive({
-    
+  dataset<- reactive({    
     dataset <- Base() #%>%
     #bind_rows(Historico())
     dataset<-arrange(dataset, Peso, Lote,Galpao) #ordena
@@ -256,8 +238,7 @@ server = function(input, output, session) {
     
     n<-length(dataset1$Peso)
     index<-as.vector(NULL)
-    
-    
+     
     for (i in 1:n) {
       if(i==1){
         index[i]<-1
@@ -269,11 +250,7 @@ server = function(input, output, session) {
         index[i]<-1
       }
     }
-    dataset1$index<-index 
-    
-    # <- as.numeric(input$Data)
-    # <- as.Date(input$Data, origin = "1970-01-01")
-    
+    dataset1$index<-index    
     dataset1
   })
   
@@ -296,13 +273,9 @@ server = function(input, output, session) {
     }else{
       p1<-ggplot(NULL)
       ggplotly(p1)
-    }
-    
+    }   
   })
 }
 # Run the application 
 shinyApp(ui = ui, server = server)
 ######
-
-
-
